@@ -8,7 +8,7 @@ in(cremonese, cremona_).
 in(empoli, empoli_).
 %in(fiorentina, firenze_).
 %in(verona, verona_).
-%in(inter, milano_).
+%in(inter, merda_).
 %in(juve, torino_).
 %in(lazio, roma_).
 %in(lecce, lecce_).
