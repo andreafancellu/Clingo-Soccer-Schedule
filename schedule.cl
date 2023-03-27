@@ -8,7 +8,7 @@ in(cremonese, cremona_).
 in(empoli, empoli_).
 %in(fiorentina, firenze_).
 %in(verona, verona_).
-%in(inter, merda_).
+%in(inter, milano_).
 %in(juve, torino_).
 %in(lazio, roma_).
 %in(lecce, lecce_).
@@ -25,14 +25,17 @@ in(empoli, empoli_).
 
 giornata(1..2).
 
-1 {assegna(T1, T2, G): giornata(G), team(T2)} 1 :- team(T1). % ogni team T1 può esssere associato a solo una giornata (in posizione T1)
-1 {assegna(T1, T2, G): giornata(G), team(T1)} 1 :- team(T2). % ogni team T2 può esssere associato a solo una giornata (in posizione T2)
+home(H,G):- match(H,A,G).
+away(A,G):- match(H,A,G).
 
-2 {assegna(T1 ,T2, G): team(T1), team(T2), T1 <> T2} 2 :- giornata(G). % ogni giornata deve contenere al massimo 2 match, tra team diversi
+0 {match(H, A, G): team(A), H <> A, not away(H,G)} 1 :- team(H), giornata(G).
+0 {match(H, A, G): team(H), H <> A, not home(A,G)} 1 :- team(A), giornata(G).
 
-:- assegna(T, _, G), assegna(_, T, G). % non possono esistere giornate in cui lo stesso team gioca 2 volte, in posizioni diverse (T1 e T2)
+2 {match(H, A, G): team(H), team(A), H <> A} 2 :- giornata(G).
 
-#show assegna/3.
+:- match(H, _, G), match(_, H, G).
+
+#show match/3.
 
 
 
