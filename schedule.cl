@@ -23,28 +23,44 @@ in(spezia, laspezia_).
 in(torino, torino_).
 in(udinese, udine_).
 
-giornataAndata(1..19).
+giornataAndata(1..19). 
 giornataRitorno(20..38).
 
-home(H,G):- match(H,A,G).
-away(A,G):- match(H,A,G).
+home(H,G):- match(H,A,G). % Definisco la partita in casa
+away(A,G):- match(H,A,G). % Definisco la partita fuori casa
 
-0 {match(H, A, G): team(A), H <> A, not away(H,G)} 1 :- team(H), giornataAndata(G).
+% ogni team, per ogni giornata di andata, ha tra 0 e 1 match in casa, non con se stessa e se non gioca fuori casa nella stessa giornata di andata
+0 {match(H, A, G): team(A), H <> A, not away(H,G)} 1 :- team(H), giornataAndata(G). 
+
+% ogni team, per ogni giornata di andata, ha tra 0 e 1 match in fuori casa, non con se stessa e se non gioca in casa nella stessa giornata di andata
 0 {match(H, A, G): team(H), H <> A, not home(A,G)} 1 :- team(A), giornataAndata(G).
 
+% ogni giornata di andata è composta da 10 match, tra squadre diverse
 10 {match(H, A, G): team(H), team(A), H <> A} 10 :- giornataAndata(G).
 
+% ogni team, per ogni giornata di ritorno, ha tra 0 e 1 match in casa, non con se stessa e se non gioca fuori casa nella stessa giornata di ritorno
 0 {match(H, A, G): team(A), H <> A, not away(H,G)} 1 :- team(H), giornataRitorno(G).
+
+% ogni team, per ogni giornata di ritorno, ha tra 0 e 1 match in fuori casa, non con se stessa e se non gioca in casa nella stessa giornata di ritorno
 0 {match(H, A, G): team(H), H <> A, not home(A,G)} 1 :- team(A), giornataRitorno(G).
 
+% ogni giornata di ritorno è composta da 10 match, tra squadre diverse
 10 {match(H, A, G): team(H), team(A), H <> A} 10 :- giornataRitorno(G).
 
-:- match(H, A, G1), giornataAndata(G1), match(H,A,G2), giornataRitorno(G2).
-:- match(H, A, G1), giornataAndata(G1), match(H, A, G2), giornataAndata(G2), G1 <> G2.
-:- match(H, A, G1), giornataRitorno(G1), match(H,A,G2), giornataRitorno(G2), G1 <> G2.
-:- match(H1, _, G), match(H2, _, G), H1 <> H2, in(H1, C), in(H2, C).
-:- match(H, _, G), match(_, H, G).
+% non vogliamo lo stesso identico match in una giornata di andata e in una di ritorno
+:- match(H, A, G1), giornataAndata(G1), match(H, A, G2), giornataRitorno(G2).
 
+% non vogliamo lo stesos identico match in due giornate di andata
+:- match(H, A, G1), giornataAndata(G1), match(H, A, G2), giornataAndata(G2), G1 <> G2.
+
+% non vogliamo lo stesso identico match in due giornate di ritorno
+:- match(H, A, G1), giornataRitorno(G1), match(H,A,G2), giornataRitorno(G2), G1 <> G2.
+
+% non vogliamo due match nella stessa giornata dove le due squadre in casa, giocano nella stessa città
+:- match(H1, _, G), match(H2, _, G), H1 <> H2, in(H1, C), in(H2, C).
+
+% ?Secondo me questo vincolo non serve più, i vincoli a riga 33, 36, 42, 45  fanno lo stesso lavoro, dovremmo testarlo in qualche modo
+%:- match(H, _, G), match(_, H, G).
 
 
 % calendario inter per semplificare i calcoli
@@ -92,7 +108,7 @@ match(torino, inter, 38).
 % match(atalanta, milan, 2).
 % match(milan, bologna, 3).
 % match(sassuolo, milan, 4).
-%% match(milan, inter, 5).
+% match(milan, inter, 5).
 % match(sampdoria, milan, 6).
 % match(milan, napoli, 7).
 % match(empoli, milan, 8).
