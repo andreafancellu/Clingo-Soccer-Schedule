@@ -1,5 +1,5 @@
 % Squadre di serie A e città
-team(atalanta;bologna;cremonese;empoli;fiorentina;verona;inter;juve;lazio;lecce).
+team(atalanta;bologna;cremonese;empoli;fiorentina;verona).%;inter;juve;lazio;lecce).
 % team(milan;monza;napoli;roma;salernitana;sampdoria;sassuolo;spezia;torino;udinese).
 
 in(atalanta, bergamo_).
@@ -8,10 +8,10 @@ in(cremonese, cremona_).
 in(empoli, empoli_).
 in(fiorentina, firenze_).
 in(verona, verona_).
-in(inter, milano_).
-in(juve, rivoli_).
-in(lazio, frosinone_).
-in(lecce, lecce_).
+% in(inter, milano_).
+% in(juve, rivoli_).
+% in(lazio, frosinone_).
+% in(lecce, lecce_).
 % in(milan, milano_).
 % in(monza, monza_).
 % in(napoli, napoli_).
@@ -23,8 +23,8 @@ in(lecce, lecce_).
 % in(torino, torino_).
 % in(udinese, udine_).
 
-giornataAndata(1..9). 
-giornataRitorno(10..18).
+giornataAndata(1..5). 
+giornataRitorno(6..10).
 
 home(H,G):- match(H,A,G). % Definisco la partita in casa
 away(A,G):- match(H,A,G). % Definisco la partita fuori casa
@@ -36,7 +36,7 @@ away(A,G):- match(H,A,G). % Definisco la partita fuori casa
 0 {match(H, A, G): team(H), H <> A, not home(A,G)} 1 :- team(A), giornataAndata(G).
 
 % ogni giornata di andata è composta da 10 match, tra squadre diverse
-5 {match(H, A, G): team(H), team(A), H <> A} 5 :- giornataAndata(G).
+3 {match(H, A, G): team(H), team(A), H <> A} 3 :- giornataAndata(G).
 
 % ogni team, per ogni giornata di ritorno, ha tra 0 e 1 match in casa, non con se stessa e se non gioca fuori casa nella stessa giornata di ritorno
 0 {match(H, A, G): team(A), H <> A, not away(H,G)} 1 :- team(H), giornataRitorno(G).
@@ -45,7 +45,7 @@ away(A,G):- match(H,A,G). % Definisco la partita fuori casa
 0 {match(H, A, G): team(H), H <> A, not home(A,G)} 1 :- team(A), giornataRitorno(G).
 
 % ogni giornata di ritorno è composta da 10 match, tra squadre diverse
-5 {match(H, A, G): team(H), team(A), H <> A} 5 :- giornataRitorno(G).
+3 {match(H, A, G): team(H), team(A), H <> A} 3 :- giornataRitorno(G).
 
 % non vogliamo lo stesso identico match in una giornata di andata e in una di ritorno
 :- match(H, A, G1), giornataAndata(G1), match(H, A, G2), giornataRitorno(G2).
@@ -64,10 +64,12 @@ away(A,G):- match(H,A,G). % Definisco la partita fuori casa
 % non vogliamo che nella stessa giornata una squadra possa giocare sia in casa che fuori casa
 :- match(H, _, G), match(_, H, G).
 
-%! idea per vincolo opzionale 1, non funziona.
-% :- match(H, _, G1), match(H, _, G2), X = G2 - G1, Sum = 1.
-% :- match(_, A, G1), match(_, A, G2), X = G2 - G1, Sum = 1.
+%! idea per vincolo opzionale 1
+% :- match(H, _, G1), match(H, _, G2), giornataAndata(G1), giornataAndata(G2), home(H, G1), home(H, G2), G2 - G1 = 1.
+% :- match(_, A, G1), match(_, A, G2), giornataAndata(G1), giornataAndata(G2), G2 - G1 = 1.
 
+% :- match(H, _, G1), match(H, _, G2), giornataRitorno(G1), giornataRitorno(G2), G2 - G1 = 1.
+% :- match(_, A, G1), match(_, A, G2), giornataRitorno(G1), giornataRitorno(G2), G2 - G1 = 1.
 
 % calendario inter per semplificare i calcoli
 % match(lecce, inter, 1). 
