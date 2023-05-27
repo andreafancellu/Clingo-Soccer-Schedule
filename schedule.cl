@@ -40,5 +40,5 @@ match(H, A) :- team(H), team(A), H <> A.
 %:- assegna(G1, match(H, _)), assegna(G2, match(H, _)), G1 < G2, G2-G1 = 1.
 
 %Secondo vincolo facoltativo
-:- assegna(G1, match(H, A)), assegna(G2, match(A, H)), G1 < 20, G2 >19, G2-G1 > 10.
+:- assegna(G1, match(H, A)), assegna(G2, match(A, H)), G1 < 20, G2 >19, G2-G1 < 10.
 #show assegna/2.
