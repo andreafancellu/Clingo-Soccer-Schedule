@@ -35,14 +35,10 @@ match(H, A) :- team(H), team(A), H <> A.
 :- assegna(G, match(H, A1)), assegna(G , match(A2, H)).
 :- assegna(G, match(H1, A1)), assegna(G, match(H2, A2)), in(H1, C), in(H2, C), H1<>H2.
 
+%Primo vincolo facoltativo
+%:- assegna(G1, match(H, _)), assegna(G2, match(H, _)), G1 > G2, G1-G2 = 1.
+%:- assegna(G1, match(H, _)), assegna(G2, match(H, _)), G1 < G2, G2-G1 = 1.
 
-%! idea per vincolo opzionale 1
-% :- match(H, _, G1), match(H, _, G2), giornataAndata(G1), giornataAndata(G2), home(H, G1), home(H, G2), team(H), G2 - G1 = 1.
-% :- match(_, A, G1), match(_, A, G2), giornataAndata(G1), giornataAndata(G2), away(A, G1), away(A, G2), team(A), G2 - G1 = 1.
-
-% :- match(H, _, G1), match(H, _, G2), giornataRitorno(G1), giornataRitorno(G2), home(H, G1), home(H, G2), team(H), G2 - G1 = 1.
-% :- match(_, A, G1), match(_, A, G2), giornataRitorno(G1), giornataRitorno(G2), away(A, G1), away(A, G2), team(A), G2 - G1 = 1.
-
-
-
+%Secondo vincolo facoltativo
+:- assegna(G1, match(H, A)), assegna(G2, match(A, H)), G1 < 20, G2 >19, G2-G1 > 10.
 #show assegna/2.
