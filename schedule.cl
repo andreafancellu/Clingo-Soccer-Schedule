@@ -1,3 +1,5 @@
+%/home/fazza/Desktop/clingo-4.5.4-linux-x86_64/clingo schedule.cl -t 8 > schedule.txt cosi ti restituisce l'output su file
+
 % sono iscritte 20 squadre;
 team(atalanta;bologna;cremonese;empoli;fiorentina;verona;inter;juve;lazio;lecce).
 team(milan;monza;napoli;roma;salernitana;sampdoria;sassuolo;spezia;torino;udinese).
@@ -59,6 +61,9 @@ match(H, A) :- team(H), team(A), H <> A.
 %Primo vincolo facoltativo - ciascuna squadra non deve giocare mai più di due partite consecutive in casa o fuori casa;
 %:- assegna(G1, match(H, A1)), assegna(G2, match(H, A2)), G1-G2 = 1.
 %:- assegna(G1, match(H1, A)), assegna(G2, match(H2, A)), G2-G1 = 1.
+%:- assegna(G, match(H1, A)), assegna(G+1, match(H2, A)).
+%:- assegna(G, match(H, A1)), assegna(G+1, match(H, A2)).
+
 
 %Secondo vincolo facoltativo - la distanza tra una coppia di gare di andata e ritorno è di almeno 10 giornate
 :- assegna(G1, match(H, A)), assegna(G2, match(A, H)), G1 < 20, G2 > 19, G2-G1 < 10.
