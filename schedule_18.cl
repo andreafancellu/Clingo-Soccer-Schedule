@@ -1,7 +1,5 @@
-%/home/fazza/Desktop/clingo-4.5.4-linux-x86_64/clingo schedule.cl -t 8 > schedule.txt cosi ti restituisce l'output su file
-
-% sono iscritte 20 squadre;
-team(atalanta;bologna;cremonese;empoli;fiorentina;verona;inter;juve;lazio;milan).
+team(atalanta;bologna;cremonese;empoli;fiorentina;verona;inter;juve;lazio;lecce).
+team(milan;monza;napoli;roma;salernitana;sampdoria;sassuolo;spezia).
 
 %ogni squadra fa riferimento ad una città, che offre la struttura in cui la squadra gioca gli incontri in casa;
 in(atalanta, bergamo_).
@@ -13,10 +11,18 @@ in(verona, verona_).
 in(inter, milano_).
 in(juve, rivoli_).
 in(lazio, frosinone_).
+in(lecce, lecce_).
 in(milan, milano_).
+in(monza, monza_).
+in(napoli, napoli_).
+in(roma, roma_).
+in(salernitana, salerno_).
+in(sampdoria, genova_).
+in(sassuolo, sassuolo_).
+in(spezia, laspezia_).
 
-% 38 giornate, 19 di andata e 19 di ritorno NON simmetriche
-giornata(1..18).
+
+giornata(1..34).
 
 % ogni match è formato da due team diversi fra loro
 match(H, A) :- team(H), team(A), H <> A. 
@@ -25,10 +31,10 @@ match(H, A) :- team(H), team(A), H <> A.
 1 {assegna(G, match(H, A)) : giornata(G)} 1 :- match(H, A).
 
 %ogni giornata ha 10 partite
-5 {assegna(G, match(H, A)) : match(H, A)} 5 :- giornata(G).
+9 {assegna(G, match(H, A)) : match(H, A)} 9 :- giornata(G).
 
 % ogni squadra affronta due volte tutte le altre squadre;
-9 {match(H, A) : team(A)} 9 :- team(H).
+17 {match(H, A) : team(A)} 17 :- team(H).
 
 % una squadra non può giocare due volte in casa nella stessa giornata;
 :- assegna(G, match(H, A1)), assegna(G, match(H, A2)), A1<>A2.
@@ -43,21 +49,15 @@ match(H, A) :- team(H), team(A), H <> A.
 :- assegna(G, match(H1, A1)), assegna(G, match(H2, A2)), in(H1, C), in(H2, C), H1<>H2.
 
 % suddivisione match di andata e ritorno
-:- assegna(G1, match(H, A)), assegna(G2, match(A, H)), G1 > 9, G2 > 9.
-:- assegna(G1, match(H, A)), assegna(G2, match(A, H)), G1 < 10, G2 < 10.
+:- assegna(G1, match(H, A)), assegna(G2, match(A, H)), G1 > 17, G2 > 17.
+:- assegna(G1, match(H, A)), assegna(G2, match(A, H)), G1 < 18, G2 < 18.
 
 
-%Primo vincolo facoltativo - ciascuna squadra non deve giocare mai più di due partite consecutive in casa o fuori casa;
-:- assegna(G1, match(H, A1)), assegna(G2, match(H, A2)), G1>G2, G1-G2 = 1.
-:- assegna(G1, match(H1, A)), assegna(G2, match(H2, A)), G2>G1, G2-G1 = 1.
+%Secondo vincolo facoltativo - la distanza tra una coppia di gare di andata e ritorno è di almeno 10 giornate
+:- assegna(G1, match(H, A)), assegna(G2, match(A, H)), G1 < 18, G2 > 17, G2-G1 < 9.
 
-
-
-%Secondo vincolo facoltativo - la distanza tra una coppia di gare di andata e ritorno è di almeno 5 giornate
-:- assegna(G1, match(H, A)), assegna(G2, match(A, H)), G1 < 10, G2 > 9, G2-G1 < 5.
-
-% Questo vincolo è il caso opposto di quello sopra, non so se è necessario, ma secondo me ha senso.
-:- assegna(G1, match(H, A)), assegna(G2, match(A, H)), G1 > 9, G2 < 10, G1-G2 < 5.
+% Questo vincolo è il caso opposto di quello sopra
+:- assegna(G1, match(H, A)), assegna(G2, match(A, H)), G1 > 17, G2 < 18, G1-G2 < 9.
 
 
 
